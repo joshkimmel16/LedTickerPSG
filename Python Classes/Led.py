@@ -60,7 +60,7 @@ class Led(object):
 
         return output
 
-        
+#error class       
 class LedError(Exception):
     def __init__(self, message):
         Exception.__init__(self, message)

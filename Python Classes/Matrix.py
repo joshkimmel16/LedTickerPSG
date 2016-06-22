@@ -98,7 +98,7 @@ class Matrix(object):
                 row += str(self.rows[m][n])
             print (row)
                 
-
+#error class
 class MatrixError(Exception):
     def __init__(self, message):
         Exception.__init__(self, message)
