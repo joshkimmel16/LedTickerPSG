@@ -27,6 +27,32 @@ class Matrix(object):
         
         return self.rows[m][n]
 
+    #get matrix representing the given column of self
+    def getcolumn(self, n):
+
+        #check for valid data
+        if (not type(n) is int or n < 0 or n > self.n-1):
+            raise MatrixError("Invalid column index")
+
+        output = Matrix(self.m, 1)
+        for m in range(self.m):
+            output.setdatum(m, 0, self.rows[m][n])
+
+        return output
+
+    #get matrix representing the given row of self
+    def getrow(self, m):
+
+        #check for valid data
+        if (not type(m) is int or m < 0 or m > self.m-1):
+            raise MatrixError("Invalid row index")
+
+        output = Matrix(1, self.n)
+        for n in range(self.n):
+            output.setdatum(0, n, self.rows[m][n])
+
+        return output
+
     #set the value of matrix[row][col]
     def setdatum(self, m, n, data):
         
@@ -75,10 +101,10 @@ class Matrix(object):
     def concatenate(self, matrix):
 
         #validate inputs
-        if ((not type(matrix) is Matrix) or (not matrix.m == self.m) or (not matrix.n == self.n)):
-            raise MatrixError("Invalid input matrix. Matrices must have same dimensions")
+        if ((not type(matrix) is Matrix) or (not matrix.m == self.m)):
+            raise MatrixError("Invalid input matrix. Matrices must have same height")
 
-        output = Matrix(self.m, self.n*2)
+        output = Matrix(self.m, self.n+matrix.n)
         col_count = 0
         for n in range(self.n):
             for m in range(self.m):
@@ -89,6 +115,36 @@ class Matrix(object):
                 output.rows[m][col_count+n] = matrix.rows[m][n]
 
         return output
+
+    #replace left/rightmost n columns with input
+    def shift_horizontal(self, left, new_col):
+
+        #validate inputs
+        if (not type(left) is bool or not type(new_col) is Matrix or (not self.m == new_col.m)):
+            raise MatrixError("Invalid inputs. Matrices must have the same height")
+
+        shift_factor = self.n - new_col.n
+        if (shift_factor <= 0):
+            #replace the old matrix entirely
+            self.copy(new_col)
+            return
+        else:
+            #shift columns to the left
+            if (left):
+                output = Matrix(self.m, shift_factor)
+                for m in range(self.m):
+                    for n in range(new_col.n,self.n):
+                        output.setdatum(m, n-new_col.n, self.rows[m][n])
+                self.copy(output.concatenate(new_col))
+            #shift columns to the right
+            else:
+                output = Matrix(new_col.m, new_col.n)
+                output.copy(new_col)
+                temp = Matrix(self.m, shift_factor)
+                for m in range(self.m):
+                    for n in range(shift_factor):
+                        temp.setdatum(m, n, self.rows[m][n])
+                self.copy(output.concatenate(temp))
 
     #print the matrix to console
     def print_matrix(self):
