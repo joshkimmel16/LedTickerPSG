@@ -65,18 +65,18 @@ class Matrix(object):
             for m in range(self.m):
                 for n in range(self.n):
                    if (self.rows[m][n] == 1):
-                       output.append((m,n))
+                       output.append((m,n,1))
         else:
             for m in range(self.m):
                 for n in range(self.n):
                    if (self.rows[m][n] == 0):
-                       output.append((m,n))
+                       output.append((m,n,0))
 
         return output
 
     #copy constructor
     def copy_construct(self):
-        return Matrix(self.m, self.n, self.get_bits(True)) #NOT COMPLETE YET
+        return Matrix(self.m, self.n, self.get_bits(True))
             
 
     #set the value of matrix[row][col]
