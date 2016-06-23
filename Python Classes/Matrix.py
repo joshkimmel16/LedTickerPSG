@@ -53,6 +53,32 @@ class Matrix(object):
 
         return output
 
+    #get a list of the indices of all set/unset bits
+    def get_bits(self, on):
+
+        #check inputs
+        if (not type(on) is bool):
+            raise MatrixError("Invalid input")
+
+        output = []
+        if (on):
+            for m in range(self.m):
+                for n in range(self.n):
+                   if (self.rows[m][n] == 1):
+                       output.append((m,n))
+        else:
+            for m in range(self.m):
+                for n in range(self.n):
+                   if (self.rows[m][n] == 0):
+                       output.append((m,n))
+
+        return output
+
+    #copy constructor
+    def copy_construct(self):
+        return Matrix(self.m, self.n, self.get_bits(True)) #NOT COMPLETE YET
+            
+
     #set the value of matrix[row][col]
     def setdatum(self, m, n, data):
         
