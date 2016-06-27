@@ -142,6 +142,25 @@ class Matrix(object):
 
         return output
 
+    #stack self on top of input matrix
+    def stack_matrix(self, matrix):
+
+        #validate inputs
+        if ((not type(matrix) is Matrix) or (not matrix.n == self.n)):
+            raise MatrixError("Invalid input matrix. Matrices must have same number of columns")
+
+        output = Matrix(self.m+matrix.m, self.n)
+        row_count = 0
+        for m in range(self.m):
+            for n in range(self.n):
+                output.rows[m][n] = self.rows[m][n]
+            row_count += 1
+        for m in range(matrix.m):
+            for n in range(matrix.n):
+                output.rows[row_count+m][n] = matrix.rows[m][n]
+
+        return output
+
     #replace left/rightmost n columns with input
     def shift_horizontal(self, left, new_col):
 
@@ -171,6 +190,36 @@ class Matrix(object):
                     for n in range(shift_factor):
                         temp.setdatum(m, n, self.rows[m][n])
                 self.copy(output.concatenate(temp))
+
+    #replace top/bottom n rows with input
+    def shift_vertical(self, bottom, new_rows):
+
+        #validate inputs
+        if (not type(bottom) is bool or not type(new_rows) is Matrix or (not self.n == new_rows.n)):
+            raise MatrixError("Invalid inputs. Matrices must have the same number of columns")
+
+        shift_factor = self.m - new_rows.m
+        if (shift_factor <= 0):
+            #replace the old matrix entirely
+            self.copy(new_rows)
+            return
+        else:
+            #shift columns up
+            if (bottom):
+                output = Matrix(shift_factor, self.n)
+                for n in range(self.n):
+                    for m in range(new_rows.m,self.n):
+                        output.setdatum(m-new_rows.m, n, self.rows[m][n])
+                self.copy(output.stack_matrix(new_rows))
+            #shift columns down
+            else:
+                output = Matrix(new_rows.m, new_rows.n)
+                output.copy(new_rows)
+                temp = Matrix(shift_factor, self.n)
+                for n in range(self.n):
+                    for m in range(shift_factor):
+                        temp.setdatum(m, n, self.rows[m][n])
+                self.copy(output.stack_matrix(temp))
 
     #print the matrix to console
     def print_matrix(self):
