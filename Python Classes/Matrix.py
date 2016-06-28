@@ -53,6 +53,23 @@ class Matrix(object):
 
         return output
 
+    #return submatrix of self given row and column indices
+    #submatrix is computed from top left
+    def get_submatrix(self, m, n):
+
+        #check inputs
+        if (not type(m) is int or m < 0 or not type(n) is int or n < 0):
+            raise MatrixError("Invalid matrix index")
+
+        row_bound = self.m if (m >= self.m) else m
+        col_bound = self.n if (n >= self.n) else n
+
+        output = Matrix(row_bound, col_bound)
+        for x in range(row_bound):
+            for y in range(col_bound):
+                output.setdatum(x, y, self.rows[x][y])
+        return output
+
     #get a list of the indices of all set/unset bits
     def get_bits(self, on):
 
@@ -221,6 +238,66 @@ class Matrix(object):
                         temp.setdatum(m, n, self.rows[m][n])
                 self.copy(output.stack_matrix(temp))
 
+    #return a matrix that is a bitwise "and" of the 2 input matrices
+    def logical_and(self, matrix):
+
+        #validate inputs
+        if (not type(matrix) is Matrix or not (self.m == matrix.m and self.n == matrix.n)):
+            raise MatrixError("Invalid input matrix. Matrices must have same dimensions")
+
+        output = Matrix(self.m, self.n)
+        for m in range(self.m):
+            for n in range(self.n):
+                if (self.rows[m][n] == 1 and matrix.rows[m][n] == 1):
+                    output.setdatum(m, n, 1)
+                else:
+                    output.setdatum(m, n, 0)
+        return output
+
+    #return a matrix that is a bitwise "or" of the 2 input matrices
+    def logical_or(self, matrix):
+
+        #validate inputs
+        if (not type(matrix) is Matrix or not (self.m == matrix.m and self.n == matrix.n)):
+            raise MatrixError("Invalid input matrix. Matrices must have same dimensions")
+
+        output = Matrix(self.m, self.n)
+        for m in range(self.m):
+            for n in range(self.n):
+                if (self.rows[m][n] == 1 or matrix.rows[m][n] == 1):
+                    output.setdatum(m, n, 1)
+                else:
+                    output.setdatum(m, n, 0)
+        return output
+
+    #return a matrix that is a bitwise "xor" of the 2 input matrices
+    def logical_xor(self, matrix):
+
+        #validate inputs
+        if (not type(matrix) is Matrix or not (self.m == matrix.m and self.n == matrix.n)):
+            raise MatrixError("Invalid input matrix. Matrices must have same dimensions")
+
+        output = Matrix(self.m, self.n)
+        for m in range(self.m):
+            for n in range(self.n):
+                if (self.rows[m][n] != matrix.rows[m][n]):
+                    output.setdatum(m, n, 1)
+                else:
+                    output.setdatum(m, n, 0)
+        return output
+
+    #return a matrix that is a bitwise "not" of self
+    def logical_not(self):
+
+        output = Matrix(self.m, self.n)
+        for m in range(self.m):
+            for n in range(self.n):
+                if (self.rows[m][n] == 1):
+                    output.setdatum(m, n, 0)
+                else:
+                    output.setdatum(m, n, 1)
+        return output
+
     #print the matrix to console
     def print_matrix(self):
         for m in range(self.m):
@@ -228,6 +305,7 @@ class Matrix(object):
             for n in range(self.n):
                 row += str(self.rows[m][n])
             print (row)
+             
                 
 #error class
 class MatrixError(Exception):
