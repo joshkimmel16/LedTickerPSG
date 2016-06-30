@@ -13,6 +13,13 @@ other_test.print_matrix()
 
 print("")
 
+#copy constructor
+print("Copy construct")
+third_test = other_test.copy_construct()
+third_test.print_matrix()
+
+print("")
+
 #setdatum and getdatum
 print ("Getter and Setter tests")
 test.setdatum(0,0,(23,45,64))

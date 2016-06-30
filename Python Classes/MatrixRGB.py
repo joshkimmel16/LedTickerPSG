@@ -71,8 +71,14 @@ class Matrix(object):
 
     #get_bits - DOES THIS MAKE SENSE
 
-    #copy_construct - NEED TO RE-IMPLEMENT
-            
+    #copy_constructor
+    def copy_construct(self):
+
+        output = Matrix(self.m, self.n)
+        for m in range(self.m):
+            for n in range(self.n):
+                output.setdatum(m, n, self.rows[m][n])
+        return output
 
     #set the value of matrix[row][col]
     def setdatum(self, m, n, data):
